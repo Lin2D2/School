@@ -45,22 +45,29 @@ def check_and_get_input():
     if len(input_digit) > 18:
         print("enter was to long.")
         check_and_get_input()
-    elif input_digit.find(",") != -1 or input_digit.find(".") != -1:
-        if len(re.findall("\.", input_digit)) > 1:
-            print("ip Adresse")
-        elif input_digit.find(","):
-            print("Doubel")
-        else:
-            print("Doubel")
     else:
-        number_typ = WholeNumbers()
-        number_typ.whole_numbers(input_digit)
+        number_typ = NumbersTransform()
+        if input_digit.find(",") != -1 or input_digit.find(".") != -1:
+            if len(re.findall("\.", input_digit)) > 1:
+                print("ip Adresse")
+            elif input_digit.find(","):
+                number_typ.set_typ("decimal")
+                number_typ.run(input_digit)
+            else:
+                number_typ.set_typ("decimal")
+                number_typ.run(input_digit)
+        else:
+            number_typ.set_typ("whole")
+            number_typ.run(input_digit)
 
 
-class WholeNumbers:
+class NumbersTransform:
     def __init__(self):
-        self.result = []
+        self.interim_result = []
         self.op = Operations()
+        self.whole_number_result = ""
+        self.result = None
+        self.typ = None
 
     @staticmethod
     def reform(number, i):
@@ -69,10 +76,16 @@ class WholeNumbers:
             del number[0]
         return "".join(number)
 
-    def output(self):
-        print(self.result)
-        self.result = "".join(self.result)
-        print(self.result)
+    def set_typ(self, typ):
+        self.typ = typ
+
+    def run(self, number):
+        if self.typ == "whole":
+            self.whole_numbers(number)
+            print(self.whole_number_result)
+        elif self.typ == "decimal":
+            self.decimal_numbers(number)
+            print(self.result)
 
     def whole_numbers(self, number):
         if len(number) == 1:
@@ -80,7 +93,7 @@ class WholeNumbers:
             if one_diget_number == "ein":
                 one_diget_number += "s"
             number = self.reform(number, 1)
-            self.result.append(one_diget_number)
+            self.interim_result.append(one_diget_number)
             self.whole_numbers(number)
 
         elif len(number) == 2:
@@ -88,18 +101,33 @@ class WholeNumbers:
             number = self.reform(number, 2)
             if two_diget_number == "ein":
                 two_diget_number += "s"
-            self.result.append(two_diget_number)
+            self.interim_result.append(two_diget_number)
             self.whole_numbers(number)
 
         elif len(number) in range(3, 19):
             longer_diget_number, i = self.op.longer_numbers(number)
             number = self.reform(number, i)
             if longer_diget_number != "null":
-                self.result.append(longer_diget_number)
+                self.interim_result.append(longer_diget_number)
             self.whole_numbers(number)
 
         else:
-            self.output()
+            result = "".join(self.interim_result)
+            self.whole_number_result = result
+
+    def decimal_numbers(self, number):
+        if number.find(",") != -1:
+            number_split = number.split(",")
+        else:
+            number_split = number.split(".")
+        self.whole_numbers(number_split[0])
+        decimal_place = number_split[1]
+        decimal_place_result = []
+        print(decimal_place)
+        for i in decimal_place:
+            decimal_place_result.append(self.op.single_digits(i))
+        decimal_place_result = "".join(decimal_place_result)
+        self.result = self.whole_number_result + "komma" + decimal_place_result
 
 
 class Operations:
