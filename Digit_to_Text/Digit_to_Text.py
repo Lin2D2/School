@@ -77,6 +77,7 @@ class NumbersTransform:
         self.whole_number_result = ""
         self.result = None
         self.typ = None
+        self.len = None
 
     @staticmethod
     def reform(number, i):
@@ -90,9 +91,11 @@ class NumbersTransform:
 
     def run(self, number):
         if self.typ == "whole":
+            self.len = len(number)
             self.whole_numbers(number)
             print(self.whole_number_result)
         elif self.typ == "decimal":
+            self.len = len(number)
             self.decimal_numbers(number)
             print(self.result)
         elif self.typ == "ip address":
@@ -102,10 +105,13 @@ class NumbersTransform:
     def whole_numbers(self, number):
         if len(number) == 1:
             one_diget_number = self.op.single_digits(number)
+            number = self.reform(number, 1)
             if one_diget_number == "ein":
                 one_diget_number += "s"
-            number = self.reform(number, 1)
-            self.interim_result.append(one_diget_number)
+            if self.len > 1 and one_diget_number == "null":
+                pass
+            else:
+                self.interim_result.append(one_diget_number)
             self.whole_numbers(number)
 
         elif len(number) == 2:
@@ -113,13 +119,16 @@ class NumbersTransform:
             number = self.reform(number, 2)
             if two_diget_number == "ein":
                 two_diget_number += "s"
-            self.interim_result.append(two_diget_number)
+            if self.len > 1 and two_diget_number == "null":
+                pass
+            else:
+                self.interim_result.append(two_diget_number)
             self.whole_numbers(number)
 
         elif len(number) in range(3, 19):
             longer_diget_number, i = self.op.longer_numbers(number)
             number = self.reform(number, i)
-            if longer_diget_number != "null":
+            if longer_diget_number.find("null") == -1:
                 self.interim_result.append(longer_diget_number)
             self.whole_numbers(number)
 
@@ -195,11 +204,15 @@ class Operations:
             if number[0] == "0":
                 return "null", 1
             else:
-                return self.single_digits(number[0]) + len_number_dictionary[str(len(number))], 1
+                singel_digit_num = self.single_digits(number[0])
+                len_num = len_number_dictionary[str(len(number))]
+                if singel_digit_num == "ein":
+                    singel_digit_num += "e"
+                return singel_digit_num + len_num, 1
 
         elif len(number) % 3 == 2:
             if number[0] == "1" and len(number) > 6:
-                return self.single_digits(number[0]) + len_number_dictionary[str(len(number) - 1)], 1
+                return self.two_diget_check(number[0]+number[1]) + len_number_dictionary[str(len(number) - 1)], 1
 
             else:
                 return self.two_diget_check(number[0]+number[1]) + len_number_dictionary[str(len(number)-1)], 2
