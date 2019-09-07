@@ -12,8 +12,6 @@
 #   Made by Linus Behrens
 
 
-result = []
-
 one_diget_dictionary = {
     "1": "ein", "2": "zwei",
     "3": "drei", "4": "vier",
@@ -39,6 +37,8 @@ len_number_dictionary = {
     "16": "biliarden",
 }
 
+result = []
+
 
 def reform(number, i):
     number = list(number)
@@ -54,88 +54,107 @@ def check_and_get_input():
         check_and_get_input()
 
     else:
-        typ(input_digit)
+        number_typ = Whole_Numbers()
+        number_typ.whole_numbers(input_digit)
 
 
-def typ(number):
-    if len(number) == 1:
-        one_diget_number = one_diget(number)
-        if one_diget_number == "ein":
-            one_diget_number += "s"
-        number = reform(number, 1)
-        result.append(one_diget_number)
-        typ(number)
+class Whole_Numbers:
+    def __init__(self):
+        self.result = []
+        self.op = Operations()
 
-    elif len(number) == 2:
-        two_diget_number = two_diget_check(number)
-        number = reform(number, 2)
-        if two_diget_number == "ein":
-            two_diget_number += "s"
-        result.append(two_diget_number)
-        typ(number)
+    def output(self):
+        print(self.result)
+        self.result = "".join(self.result)
+        print(self.result)
 
-    elif len(number) in range(3, 19):
-        longer_diget_number, i = longer_diget(number)
-        number = reform(number, i)
-        if longer_diget_number != "null":
-            result.append(longer_diget_number)
-        typ(number)
+    def whole_numbers(self, number):
+        if len(number) == 1:
+            one_diget_number = self.op.single_digits(number)
+            if one_diget_number == "ein":
+                one_diget_number += "s"
+            number = reform(number, 1)
+            self.result.append(one_diget_number)
+            self.whole_numbers(number)
 
-    else:
-        print("result: ")
+        elif len(number) == 2:
+            two_diget_number = self.op.two_diget_check(number)
+            number = reform(number, 2)
+            if two_diget_number == "ein":
+                two_diget_number += "s"
+            self.result.append(two_diget_number)
+            self.whole_numbers(number)
 
-
-def one_diget(number):
-    return one_diget_dictionary[number]
-
-
-def two_diget_check(number):
-    if number[0] == "0":
-        return one_diget(number[1])
-
-    elif number[0] == "1":
-        if number[1] in str(range(2)):
-            return two_diget_exeptions_dictionary[number]
-        else:
-            return two_diget(number)
-
-    elif number[0] > "1":
-        return two_diget(number)
-
-
-def two_diget(number):
-    if number[0] in str(range(1, 2)):
-        return one_diget(number[1]) + "und" + two_diget_exeptions_dictionary[number[0]]
-    else:
-        return one_diget(number[1]) + "und" + one_diget(number[0]) + "zig"
-
-
-def longer_diget(number):
-    if len(number) % 3 == 0:
-        if len(number) > 3:
-            return one_diget(number[0]) + len_number_dictionary[str(len(number)-3*(len(number)//3-1))], 1
+        elif len(number) in range(3, 19):
+            longer_diget_number, i = self.op.longer_numbers(number)
+            number = reform(number, i)
+            if longer_diget_number != "null":
+                self.result.append(longer_diget_number)
+            self.whole_numbers(number)
 
         else:
+            self.output()
+
+
+class Operations:
+    @staticmethod
+    def single_digits(number):
+        return one_diget_dictionary[number]
+
+    def two_diget_check(self, number):
+        if number[0] == "0":
+            return self.single_digits(number[1])
+
+        elif int(number[0]) in range(1, 3):
+            if number[0] == "1":
+                if int(number[1]) in range(0, 3):
+                    return two_diget_exeptions_dictionary[number]
+                else:
+                    return self.two_digit_numbers(number)
+
+            if number[0] == "2":
+                if number[1] == "0":
+                    return two_diget_exeptions_dictionary[number[0]]
+                else:
+                    return self.single_digits(number[1]) + "und" + two_diget_exeptions_dictionary[number[0]]
+
+
+        elif number[0] > "1":
+            return self.two_digit_numbers(number)
+
+    def two_digit_numbers(self, number):
+        if number[0] == "1":
+            return self.single_digits(number[1]) + two_diget_exeptions_dictionary[number[0]]
+        else:
+            secound_number = self.single_digits(number[1])
+            first_number = self.single_digits(number[0])
+            if secound_number == "null":
+                return first_number + "zig"
+            return secound_number + "und" + first_number + "zig"
+
+    def longer_numbers(self, number):
+        if len(number) % 3 == 0:
+            if len(number) > 3:
+                return self.single_digits(number[0]) + len_number_dictionary[str(len(number) - 3 * (len(number) // 3 - 1))], 1
+
+            else:
+                if number[0] == "0":
+                    return "null", 1
+                else:
+                    return self.single_digits(number[0]) + len_number_dictionary[str(len(number))], 1
+
+        elif len(number) % 3 == 1:
             if number[0] == "0":
                 return "null", 1
             else:
-                return one_diget(number[0]) + len_number_dictionary[str(len(number))], 1
+                return self.single_digits(number[0]) + len_number_dictionary[str(len(number))], 1
 
-    elif len(number) % 3 == 1:
-        if number[0] == "0":
-            return "null", 1
-        else:
-            return one_diget(number[0]) + len_number_dictionary[str(len(number))], 1
+        elif len(number) % 3 == 2:
+            if number[0] == "1" and len(number) > 6:
+                return self.single_digits(number[0]) + len_number_dictionary[str(len(number) - 1)], 1
 
-    elif len(number) % 3 == 2:
-        if number[0] == "1" and len(number) > 6:
-            return one_diget(number[0]) + len_number_dictionary[str(len(number)-1)], 1
-
-        else:
-            return two_diget_check(number[0]+number[1]) + len_number_dictionary[str(len(number)-1)], 2
+            else:
+                return self.two_diget_check(number[0]+number[1]) + len_number_dictionary[str(len(number)-1)], 2
 
 
 check_and_get_input()
-
-result = "".join(result)
-print(result)
