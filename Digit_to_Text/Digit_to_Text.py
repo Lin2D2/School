@@ -42,14 +42,15 @@ len_number_dictionary = {
 
 def check_and_get_input():
     input_digit = input("Please enter an Number: ")
-    if len(input_digit) > 18:
+    if len(input_digit) > 18:    # you could easy expand the limit by adding more to the len_number_dictionary
         print("enter was to long.")
         check_and_get_input()
     else:
         number_typ = NumbersTransform()
         if input_digit.find(",") != -1 or input_digit.find(".") != -1:
             if len(re.findall("\.", input_digit)) > 1:
-                print("ip Adresse")
+                number_typ.set_typ("ip address")
+                number_typ.run(input_digit)
             elif input_digit.find(","):
                 number_typ.set_typ("decimal")
                 number_typ.run(input_digit)
@@ -85,6 +86,9 @@ class NumbersTransform:
             print(self.whole_number_result)
         elif self.typ == "decimal":
             self.decimal_numbers(number)
+            print(self.result)
+        elif self.typ == "ip address":
+            self.ip_address(number)
             print(self.result)
 
     def whole_numbers(self, number):
@@ -128,6 +132,9 @@ class NumbersTransform:
             decimal_place_result.append(self.op.single_digits(i))
         decimal_place_result = "".join(decimal_place_result)
         self.result = self.whole_number_result + "komma" + decimal_place_result
+
+    def ip_address(self, number):
+        self.result = "unavailable function: " + number
 
 
 class Operations:
