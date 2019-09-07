@@ -11,6 +11,8 @@
 #
 #   Made by Linus Behrens
 
+import re
+
 
 one_diget_dictionary = {
     "1": "ein", "2": "zwei",
@@ -43,7 +45,13 @@ def check_and_get_input():
     if len(input_digit) > 18:
         print("enter was to long.")
         check_and_get_input()
-
+    elif input_digit.find(",") != -1 or input_digit.find(".") != -1:
+        if len(re.findall("\.", input_digit)) > 1:
+            print("ip Adresse")
+        elif input_digit.find(","):
+            print("Doubel")
+        else:
+            print("Doubel")
     else:
         number_typ = WholeNumbers()
         number_typ.whole_numbers(input_digit)
