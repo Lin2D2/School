@@ -37,15 +37,6 @@ len_number_dictionary = {
     "16": "biliarden",
 }
 
-result = []
-
-
-def reform(number, i):
-    number = list(number)
-    for i in range(i):
-        del number[0]
-    return "".join(number)
-
 
 def check_and_get_input():
     input_digit = input("Please enter an Number: ")
@@ -54,14 +45,21 @@ def check_and_get_input():
         check_and_get_input()
 
     else:
-        number_typ = Whole_Numbers()
+        number_typ = WholeNumbers()
         number_typ.whole_numbers(input_digit)
 
 
-class Whole_Numbers:
+class WholeNumbers:
     def __init__(self):
         self.result = []
         self.op = Operations()
+
+    @staticmethod
+    def reform(number, i):
+        number = list(number)
+        for i in range(i):
+            del number[0]
+        return "".join(number)
 
     def output(self):
         print(self.result)
@@ -73,13 +71,13 @@ class Whole_Numbers:
             one_diget_number = self.op.single_digits(number)
             if one_diget_number == "ein":
                 one_diget_number += "s"
-            number = reform(number, 1)
+            number = self.reform(number, 1)
             self.result.append(one_diget_number)
             self.whole_numbers(number)
 
         elif len(number) == 2:
             two_diget_number = self.op.two_diget_check(number)
-            number = reform(number, 2)
+            number = self.reform(number, 2)
             if two_diget_number == "ein":
                 two_diget_number += "s"
             self.result.append(two_diget_number)
@@ -87,7 +85,7 @@ class Whole_Numbers:
 
         elif len(number) in range(3, 19):
             longer_diget_number, i = self.op.longer_numbers(number)
-            number = reform(number, i)
+            number = self.reform(number, i)
             if longer_diget_number != "null":
                 self.result.append(longer_diget_number)
             self.whole_numbers(number)
@@ -117,7 +115,6 @@ class Operations:
                     return two_diget_exeptions_dictionary[number[0]]
                 else:
                     return self.single_digits(number[1]) + "und" + two_diget_exeptions_dictionary[number[0]]
-
 
         elif number[0] > "1":
             return self.two_digit_numbers(number)
