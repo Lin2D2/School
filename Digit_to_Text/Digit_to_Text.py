@@ -6,6 +6,14 @@
 #   b) Es soll eine maximal dreistellige, natürliche Zahl in einen Text umgewandelt werden.
 #   c) Es soll eine längere natürliche Zahl (maximal 18 Stellen) in einen Text umgewandelt werden.
 #      Ggf. enthaltene Tausender-Punkte in der Zahl-Darstellung sollen ignoriert werden.
+#   d) Es soll eine (ggf. auch längere) Dezimalzahl in einen Text umgewandelt werden, z. B. wird
+#      „123,456“ zu „einhundertdreiundzwanzigkommavierfünfsechs“.
+#   Für diese Aufgabe darf selbstverständlich „Pseudo-Code“ verwendet werden: „Wenn Ziffer=2, dann
+#   hänge an Ausgabe „zwei“ an.“ bzw. „Wenn Ziffer=2, dann Ausgabe ← Ausgabe+„zwei“ “ usw
+#   Wenn du programmieren kannst, kannst du das jeweilige Teil-Problem anschließend auch in einem
+#   Programm umsetzen.
+#   Eigentlich fehlt noch ein Aufgabenteil e): Eine IP-Adresse wie z. B. „10.51.168.2“ sollte ebenfalls
+#   korrekt ausgegeben werden...
 #
 #   Python version: 3.6
 #
