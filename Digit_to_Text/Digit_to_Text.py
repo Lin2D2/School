@@ -56,15 +56,19 @@ def check_and_get_input():
     else:
         number_typ = NumbersTransform()
         if input_digit.find(",") != -1 or input_digit.find(".") != -1:
-            if len(re.findall("\.", input_digit)) > 1:
+            if len(re.findall("\.", input_digit)) == 3:
                 number_typ.set_typ("ip address")
                 number_typ.run(input_digit)
-            elif input_digit.find(","):
+            elif len(re.findall(",", input_digit)) == 1:
+                number_typ.set_typ("decimal")
+                number_typ.run(input_digit)
+            elif len(re.findall("\.", input_digit)) == 1:
                 number_typ.set_typ("decimal")
                 number_typ.run(input_digit)
             else:
-                number_typ.set_typ("decimal")
-                number_typ.run(input_digit)
+                print("invalid input")
+                check_and_get_input()
+
         else:
             number_typ.set_typ("whole")
             number_typ.run(input_digit)
@@ -143,15 +147,29 @@ class NumbersTransform:
             number_split = number.split(".")
         self.whole_numbers(number_split[0])
         decimal_place = number_split[1]
-        decimal_place_result = []
-        print(decimal_place)
-        for i in decimal_place:
-            decimal_place_result.append(self.op.single_digits(i))
-        decimal_place_result = "".join(decimal_place_result)
-        self.result = self.whole_number_result + "komma" + decimal_place_result
+        decimal_place_result = self.singel_diget_read_out(decimal_place)
+        self.result = self.whole_number_result + " komma " + decimal_place_result
 
     def ip_address(self, number):
-        self.result = "unavailable function: " + number
+        number_split = number.split(".")
+        first_number = number_split[0]
+        secound_number = number_split[1]
+        third_number = number_split[2]
+        fourth_number = number_split[3]
+        first_number = self.singel_diget_read_out(first_number)
+        secound_number = self.singel_diget_read_out(secound_number)
+        third_number = self.singel_diget_read_out(third_number)
+        fourth_number = self.singel_diget_read_out(fourth_number)
+        self.result = first_number + " dot " + secound_number + " dot " + third_number + " dot " + fourth_number
+
+    def singel_diget_read_out(self, number):
+        number_result = []
+        for i in number:
+            interim_result = self.op.single_digits(i)
+            if interim_result == "ein":
+                interim_result += "s"
+            number_result.append(interim_result)
+        return "".join(number_result)
 
 
 class Operations:
