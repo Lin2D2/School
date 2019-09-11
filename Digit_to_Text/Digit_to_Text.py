@@ -20,7 +20,6 @@
 #   Made by Linus Behrens
 
 import re
-import sys
 
 
 one_diget_dictionary = {
@@ -52,7 +51,7 @@ len_number_dictionary = {
 def check_and_get_input():
     input_digit = input("If yo want to exit the Programm just Typ in exit and the Programm will end.\nPlease enter an Number: ")
     if input_digit == "exit":
-        sys.exit("Prozess finished.")
+        quit()
 
     if len(input_digit) > 18:    # you could easy expand the limit by adding more to the len_number_dictionary
         print("enter was to long.")
