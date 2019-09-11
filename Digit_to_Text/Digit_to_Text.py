@@ -20,6 +20,7 @@
 #   Made by Linus Behrens
 
 import re
+import sys
 
 
 one_diget_dictionary = {
@@ -49,7 +50,10 @@ len_number_dictionary = {
 
 
 def check_and_get_input():
-    input_digit = input("Please enter an Number: ")
+    input_digit = input("If yo want to exit the Programm just Typ in exit and the Programm will end.\nPlease enter an Number: ")
+    if input_digit == "exit":
+        sys.exit("Prozess finished.")
+
     if len(input_digit) > 18:    # you could easy expand the limit by adding more to the len_number_dictionary
         print("enter was to long.")
         check_and_get_input()
@@ -97,14 +101,15 @@ class NumbersTransform:
         if self.typ == "whole":
             self.len = len(number)
             self.whole_numbers(number)
-            print(self.whole_number_result)
+            print("result: " + self.whole_number_result + "\n")
         elif self.typ == "decimal":
             self.len = len(number)
             self.decimal_numbers(number)
-            print(self.result)
+            print("result: " + self.result + "\n")
         elif self.typ == "ip address":
             self.ip_address(number)
-            print(self.result)
+            print("result: " + self.result + "\n")
+        check_and_get_input()
 
     def whole_numbers(self, number):
         if len(number) == 1:
